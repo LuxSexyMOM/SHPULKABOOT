@@ -1,4 +1,3 @@
-> ︎ ︎ ᅠАляксандр 1958:
 -- Glossy Pet Spawner | Non-stacking, infinite random age, ordered high-tier
 local TweenService = game:GetService("TweenService")
 local Players = game:GetService("Players")
@@ -105,8 +104,6 @@ petNameBox.BackgroundColor3 = Color3.fromRGB(40,40,50)
 petNameBox.TextColor3 = Color3.fromRGB(255,255,255)
 petNameBox.Font = Enum.Font.FredokaOne
 petNameBox.TextSize = 14
-
-> ︎ ︎ ᅠАляксандр 1958:
 petNameBox.PlaceholderText = "Enter Pet Name"
 petNameBox.ClearTextOnFocus = false
 petNameBox.Parent = petContent
@@ -214,8 +211,6 @@ spawnBtn.Text = "Spawn Pet"
 spawnBtn.BackgroundColor3 = Color3.fromRGB(0,100,200)
 spawnBtn.Font = Enum.Font.FredokaOne
 spawnBtn.
-
-> ︎ ︎ ᅠАляксандр 1958:
 TextColor3 = Color3.fromRGB(255,255,255)
 spawnBtn.TextSize = 16
 spawnBtn.Parent = petContent
