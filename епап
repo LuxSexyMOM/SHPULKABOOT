@@ -35,7 +35,7 @@ uiStroke.Parent = mainFrame
 local titleLabel = Instance.new("TextLabel")
 titleLabel.Size = UDim2.new(1,0,0,25)
 titleLabel.BackgroundTransparency = 1
-titleLabel.Text = "🐶Дилдо!🐶"
+titleLabel.Text = "🐶Callie Spawner🐶"
 titleLabel.Font = Enum.Font.FredokaOne
 titleLabel.TextSize = 20
 titleLabel.TextColor3 = Color3.fromRGB(240,240,255)
@@ -44,7 +44,7 @@ titleLabel.Parent = mainFrame
 local subtitleLabel = Instance.new("TextLabel")subtitleLabel.Size = UDim2.new(1,0,0,20)
 subtitleLabel.Position = UDim2.new(0,0,0,25)
 subtitleLabel.BackgroundTransparency = 1
-subtitleLabel.Text = "Говно"
+subtitleLabel.Text = "TikTok Calliespin"
 subtitleLabel.Font = Enum.Font.FredokaOne
 subtitleLabel.TextSize = 14
 subtitleLabel.TextColor3 = Color3.fromRGB(255,255,255)
@@ -104,6 +104,7 @@ petNameBox.BackgroundColor3 = Color3.fromRGB(40,40,50)
 petNameBox.TextColor3 = Color3.fromRGB(255,255,255)
 petNameBox.Font = Enum.Font.FredokaOne
 petNameBox.TextSize = 14
+
 petNameBox.PlaceholderText = "Enter Pet Name"
 petNameBox.ClearTextOnFocus = false
 petNameBox.Parent = petContent
@@ -211,6 +212,7 @@ spawnBtn.Text = "Spawn Pet"
 spawnBtn.BackgroundColor3 = Color3.fromRGB(0,100,200)
 spawnBtn.Font = Enum.Font.FredokaOne
 spawnBtn.
+
 TextColor3 = Color3.fromRGB(255,255,255)
 spawnBtn.TextSize = 16
 spawnBtn.Parent = petContent
