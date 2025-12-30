@@ -171,7 +171,7 @@ local highTierPets = {
 "Sheeeeep","Pudding Pup","Nessie","Hare","Isla Turtle","Hot Doggo","Honey Badger",
 "Puffin","Mini Pig","Ring-tailed Lemur","Border collie","Irish Water Spaniel",
 "Fairy Bat Dragon","Cupid Bat Dragon","Strawberry Shortcake Bat Dragon",
-"Chocolate Chip Bat Dragon"
+"Chocolate Chip Bat Dragon","Cupid Dragon","Frost Fury","2D Kitty","Mermicorn","Nessie","Arctic Dusk Dragon"
 }
 -- 🐾 Spawn Pets
 local function spawnPet(petName, petType)
