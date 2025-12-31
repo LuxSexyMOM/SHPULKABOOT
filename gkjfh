@@ -1,218 +1,196 @@
--- Delta Executor: CallieStarPets Ultimate Script
--- Автоматическая ферма ресурсов + улучшенный GUI
+-- Delta Executor: CallieStarPets(5+) Draggable Menu
+-- Сохранить как: calliestarpets_delta.lua
 
-local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
-local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
-local Workspace = game:GetService("Workspace")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
+local Players = game:GetService("Players")
+local Player = Players.LocalPlayer
 
--- Конфигурация
-getgenv().Config = {
-    AutoFarm = false,
-    AutoSell = false,
-    AutoCollect = false,
-    WalkSpeed = 16,
-    JumpPower = 50,
-    AntiAFK = true,
-    InfJump = false
-}
-
--- Создаем GUI
+-- Создаем перемещаемую менюшку
 local ScreenGui = Instance.new("ScreenGui")
-if syn then syn.protect_gui(ScreenGui) end
-ScreenGui.Parent = game.CoreGui
+if syn and syn.protect_gui then
+    syn.protect_gui(ScreenGui)
+elseif gethui then
+    ScreenGui.Parent = gethui()
+else
+    ScreenGui.Parent = game.CoreGui
+end
 
-local Main = Instance.new("Frame")
-local Title = Instance.new("TextLabel")
-local Drag = Instance.new("Frame")
-local Tabs = Instance.new("Frame")
-local Body = Instance.new("Frame")
+local MainFrame = Instance.new("Frame")
+local TitleFrame = Instance.new("Frame")
+local TitleText = Instance.new("TextLabel")
+local CloseButton = Instance.new("TextButton")
+local ContentFrame = Instance.new("ScrollingFrame")
+
+-- Настройка основного окна
+ScreenGui.Name = "CallieStarPetsMenu"
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+MainFrame.Name = "MainFrame"
+MainFrame.Size = UDim2.new(0, 300, 0, 200)
+MainFrame.Position = UDim2.new(0, 50, 0, 50)
+MainFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
+MainFrame.BorderSizePixel = 0
+MainFrame.ClipsDescendants = true
+MainFrame.Parent = ScreenGui
+
+-- Скругление углов
 local UICorner = Instance.new("UICorner")
-
--- Настройка GUI
-ScreenGui.Name = "DeltaMenu"
-
-Main.Name = "Main"
-Main.Size = UDim2.new(0, 400, 0, 300)
-Main.Position = UDim2.new(0.5, -200, 0.5, -150)
-Main.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
-Main.BorderSizePixel = 0
-Main.Parent = ScreenGui
-
 UICorner.CornerRadius = UDim.new(0, 8)
-UICorner.Parent = Main
+UICorner.Parent = MainFrame
 
-Title.Name = "Title"
-Title.Size = UDim2.new(1, 0, 0, 40)
-Title.BackgroundColor3 = Color3.fromRGB(35, 35, 50)
-Title.BackgroundTransparency = 0.5
-Title.Text = "Δ CallieStarPets Executor v2.0"
-Title.TextColor3 = Color3.fromRGB(0, 255, 255)
-Title.Font = Enum.Font.GothamBold
-Title.TextSize = 18
-Title.Parent = Main
+-- Тень
+local DropShadow = Instance.new("ImageLabel")
+DropShadow.Name = "DropShadow"
+DropShadow.Size = MainFrame.Size + UDim2.new(0, 10, 0, 10)
+DropShadow.Position = MainFrame.Position - UDim2.new(0, 5, 0, 5)
+DropShadow.BackgroundTransparency = 1
+DropShadow.Image = "rbxassetid://5234383229"
+DropShadow.ImageColor3 = Color3.fromRGB(0, 0, 0)
+DropShadow.ImageTransparency = 0.5
+DropShadow.ScaleType = Enum.ScaleType.Slice
+DropShadow.SliceCenter = Rect.new(20, 20, 280, 280)
+DropShadow.Parent = ScreenGui
 
-Drag.Name = "Drag"
-Drag.Size = UDim2.new(1, 0, 0, 40)
-Drag.BackgroundTransparency = 1
-Drag.Parent = Main
+-- Заголовок
+TitleFrame.Name = "TitleFrame"
+TitleFrame.Size = UDim2.new(1, 0, 0, 40)
+TitleFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
+TitleFrame.BorderSizePixel = 0
+TitleFrame.Parent = MainFrame
 
-Tabs.Name = "Tabs"
-Tabs.Size = UDim2.new(0, 100, 1, -40)
-Tabs.Position = UDim2.new(0, 0, 0, 40)
-Tabs.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
-Tabs.Parent = Main
+TitleText.Name = "TitleText"
+TitleText.Size = UDim2.new(0.8, 0, 1, 0)
+TitleText.Position = UDim2.new(0, 10, 0, 0)
+TitleText.BackgroundTransparency = 1
+TitleText.Text = "CallieStarPets(5+)"
+TitleText.TextColor3 = Color3.fromRGB(100, 200, 255)
+TitleText.Font = Enum.Font.GothamBold
+TitleText.TextSize = 18
+TitleText.TextXAlignment = Enum.TextXAlignment.Left
+TitleText.Parent = TitleFrame
 
-Body.Name = "Body"
-Body.Size = UDim2.new(1, -100, 1, -40)
-Body.Position = UDim2.new(0, 100, 0, 40)
-Body.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
-Body.Parent = Main
+-- Кнопка закрытия
+CloseButton.Name = "CloseButton"
+CloseButton.Size = UDim2.new(0, 30, 1, 0)
+CloseButton.Position = UDim2.new(1, -30, 0, 0)
+CloseButton.BackgroundColor3 = Color3.fromRGB(200, 60, 60)
+CloseButton.BorderSizePixel = 0
+CloseButton.Text = "X"
+CloseButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+CloseButton.Font = Enum.Font.GothamBold
+CloseButton.TextSize = 14
+CloseButton.Parent = TitleFrame
 
--- Функция для создания кнопок вкладок
-local function createTab(name, color)
-    local tab = Instance.new("TextButton")
-    tab.Name = name
-    tab.Size = UDim2.new(1, 0, 0, 40)
-    tab.BackgroundColor3 = color
-    tab.BorderSizePixel = 0
-    tab.Text = name
-    tab.TextColor3 = Color3.fromRGB(255, 255, 255)
-    tab.Font = Enum.Font.Gotham
-    tab.TextSize = 14
-    tab.Parent = Tabs
-    
-    return tab
-end
+-- Контент
+ContentFrame.Name = "ContentFrame"
+ContentFrame.Size = UDim2.new(1, -20, 1, -60)
+ContentFrame.Position = UDim2.new(0, 10, 0, 50)
+ContentFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 60)
+ContentFrame.BorderSizePixel = 0
+ContentFrame.ScrollBarThickness = 5
+ContentFrame.ScrollBarImageColor3 = Color3.fromRGB(100, 150, 200)
+ContentFrame.Parent = MainFrame
 
--- Создаем вкладки
-local tabs = {
-    {name = "Ферма", color = Color3.fromRGB(60, 120, 60)},
-    {name = "Игрок", color = Color3.fromRGB(120, 60, 60)},
-    {name = "Авто", color = Color3.fromRGB(60, 60, 120)},
-    {name = "Другое", color = Color3.fromRGB(120, 120, 60)}
-}
+-- Контейнер для кнопок
+local ButtonContainer = Instance.new("UIListLayout")
+ButtonContainer.Padding = UDim.new(0, 5)
+ButtonContainer.HorizontalAlignment = Enum.HorizontalAlignment.Center
+ButtonContainer.SortOrder = Enum.SortOrder.LayoutOrder
+ButtonContainer.Parent = ContentFrame
 
-for i, tabData in ipairs(tabs) do
-    local tab = createTab(tabData.name, tabData.color)
-    tab.Position = UDim2.new(0, 0, 0, (i-1)*40)
-end
-
--- Функции фермы
-local farmFunctions = {
-    autoFarmResources = function()
-        while getgenv().Config.AutoFarm do
-            -- Поиск ресурсов
-            for _, item in pairs(Workspace:GetChildren()) do
-                if item:IsA("Model") and item.Name:find("Ore") then
-                    local char = LocalPlayer.Character
-                    if char then
-                        local humanoid = char:FindFirstChildOfClass("Humanoid")
-                        local root = char:FindFirstChild("HumanoidRootPart")
-                        
-                        if humanoid and root then
-                            -- Телепортация к ресурсу
-                            root.CFrame = item.PrimaryPart.CFrame
-                            wait(0.5)
-                            
-                            -- Эмуляция клика
-                            mouse1click()
-                            wait(0.2)
-                        end
-                    end
+-- Создаем кнопки
+local buttons = {
+    {Name = "Noclip", Color = Color3.fromRGB(70, 150, 70), Function = function()
+        local char = Player.Character
+        if char then
+            for _, part in pairs(char:GetDescendants()) do
+                if part:IsA("BasePart") then
+                    part.CanCollide = false
                 end
             end
-            wait(1)
+            print("Noclip: ON")
         end
-    end,
+    end},
     
-    autoSellItems = function()
-        -- Поиск NPC для продажи
-        for _, npc in pairs(Workspace:GetChildren()) do
-            if npc:IsA("Model") and npc.Name:find("Merchant") then
-                local char = LocalPlayer.Character
-                if char then
-                    local root = char:FindFirstChild("HumanoidRootPart")
-                    if root then
-                        root.CFrame = npc.PrimaryPart.CFrame
-                        wait(1)
-                        
-                        -- Нажатие E для взаимодействия
-                        keypress(0x45) -- E key
-                        wait(0.1)
-                        keyrelease(0x45)
-                    end
-                end
-            end
+    {Name = "Fly", Color = Color3.fromRGB(150, 70, 70), Function = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/XNEOFF/FlyGuiV3/main/FlyGuiV3.txt"))()
+    end},
+    
+    {Name = "Speed x2", Color = Color3.fromRGB(70, 70, 150), Function = function()
+        local char = Player.Character
+        if char and char:FindFirstChildOfClass("Humanoid") then
+            char:FindFirstChildOfClass("Humanoid").WalkSpeed = 32
+            print("Speed: 32")
         end
-    end
+    end},
+    
+    {Name = "TP to Base", Color = Color3.fromRGB(150, 150, 70), Function = function()
+        local char = Player.Character
+        if char and char:FindFirstChild("HumanoidRootPart") then
+            char.HumanoidRootPart.CFrame = CFrame.new(0, 100, 0)
+        end
+    end},
+    
+    {Name = "Inf Jump", Color = Color3.fromRGB(150, 70, 150), Function = function()
+        getgenv().InfiniteJumpEnabled = true
+        game:GetService("UserInputService").JumpRequest:connect(function()
+            if getgenv().InfiniteJumpEnabled then
+                Player.Character:FindFirstChildOfClass("Humanoid"):ChangeState("Jumping")
+            end
+        end)
+        print("Inf Jump: ON")
+    end},
 }
 
--- Создаем элементы управления
-local function createToggle(name, configKey, parent)
-    local frame = Instance.new("Frame")
-    local label = Instance.new("TextLabel")
-    local toggle = Instance.new("TextButton")
+-- Добавляем кнопки
+for i, btnInfo in ipairs(buttons) do
+    local button = Instance.new("TextButton")
+    button.Name = btnInfo.Name
+    button.Size = UDim2.new(0.9, 0, 0, 35)
+    button.BackgroundColor3 = btnInfo.Color
+    button.BorderSizePixel = 0
+    button.Text = btnInfo.Name
+    button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    button.Font = Enum.Font.Gotham
+    button.TextSize = 14
+    button.LayoutOrder = i
     
-    frame.Size = UDim2.new(1, -20, 0, 30)
-    frame.BackgroundTransparency = 1
-    frame.Parent = parent
-    
-    label.Size = UDim2.new(0.7, 0, 1, 0)
-    label.Text = name
-    label.TextColor3 = Color3.fromRGB(255, 255, 255)
-    label.Font = Enum.Font.Gotham
-    label.TextSize = 12
-    label.TextXAlignment = Enum.TextXAlignment.Left
-    label.BackgroundTransparency = 1
-    label.Parent = frame
-    
-    toggle.Size = UDim2.new(0, 50, 0, 20)
-    toggle.Position = UDim2.new(1, -50, 0.5, -10)
-    toggle.Text = getgenv().Config[configKey] and "ON" : "OFF"
-    toggle.BackgroundColor3 = getgenv().Config[configKey] and Color3.fromRGB(0, 255, 0) : Color3.fromRGB(255, 0, 0)
-    toggle.Parent = frame
-    
-    toggle.MouseButton1Click:Connect(function()
-        getgenv().Config[configKey] = not getgenv().Config[configKey]
-        toggle.Text = getgenv().Config[configKey] and "ON" or "OFF"
-        toggle.BackgroundColor3 = getgenv().Config[configKey] and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
-        
-        -- Запуск функции если нужно
-        if configKey == "AutoFarm" and getgenv().Config[configKey] then
-            spawn(farmFunctions.autoFarmResources)
-        end
+    -- Эффект при наведении
+    button.MouseEnter:Connect(function()
+        button.BackgroundColor3 = btnInfo.Color * 1.2
     end)
     
-    return frame
+    button.MouseLeave:Connect(function()
+        button.BackgroundColor3 = btnInfo.Color
+    end)
+    
+    -- Функция кнопки
+    button.MouseButton1Click:Connect(function()
+        pcall(btnInfo.Function)
+    end)
+    
+    button.Parent = ContentFrame
 end
 
--- Заполняем вкладку Ферма
-local farmBody = Instance.new("ScrollingFrame")
-farmBody.Size = UDim2.new(1, -10, 1, -10)
-farmBody.Position = UDim2.new(0, 5, 0, 5)
-farmBody.BackgroundTransparency = 1
-farmBody.ScrollBarThickness = 5
-farmBody.Parent = Body
-
-local farmList = Instance.new("UIListLayout")
-farmList.Parent = farmBody
-
-createToggle("Авто-Ферма", "AutoFarm", farmBody)
-createToggle("Авто-Продажа", "AutoSell", farmBody)
-createToggle("Авто-Сбор", "AutoCollect", farmBody)
-
--- Функция для перемещения GUI
+-- Логика перемещения окна
 local dragging = false
-local dragStart, startPos
+local dragInput
+local dragStart
+local startPos
 
-Drag.InputBegan:Connect(function(input)
+local function update(input)
+    local delta = input.Position - dragStart
+    MainFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+    DropShadow.Position = MainFrame.Position - UDim2.new(0, 5, 0, 5)
+end
+
+-- Обработка перемещения
+TitleFrame.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 then
         dragging = true
         dragStart = input.Position
-        startPos = Main.Position
+        startPos = MainFrame.Position
         
         input.Changed:Connect(function()
             if input.UserInputState == Enum.UserInputState.End then
@@ -222,28 +200,55 @@ Drag.InputBegan:Connect(function(input)
     end
 end)
 
-UserInputService.InputChanged:Connect(function(input)
-    if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
-        local delta = input.Position - dragStart
-        Main.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+TitleFrame.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement then
+        dragInput = input
     end
 end)
 
+UserInputService.InputChanged:Connect(function(input)
+    if input == dragInput and dragging then
+        update(input)
+    end
+end)
+
+-- Кнопка закрытия
+CloseButton.MouseButton1Click:Connect(function()
+    ScreenGui:Destroy()
+end)
+
 -- Горячие клавиши
-UserInputService.InputBegan:Connect(function(input, processed)
-    if not processed then
-        if input.KeyCode == Enum.KeyCode.Insert then
-            Main.Visible = not Main.Visible
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+    if not gameProcessed then
+        if input.KeyCode == Enum.KeyCode.RightShift then
+            MainFrame.Visible = not MainFrame.Visible
+            DropShadow.Visible = MainFrame.Visible
         elseif input.KeyCode == Enum.KeyCode.Delete then
             ScreenGui:Destroy()
         end
     end
 end)
 
-print("┌─────────────────────────────────────────┐")
-print("│    CallieStarPets Delta Executor v2.0   │")
-print("├─────────────────────────────────────────┤")
-print("│  Insert - Показать/Скрыть меню          │")
-print("│  Delete - Удалить меню                  │")
-print("│  Drag - Перетаскивать за верхнюю часть  │")
-print("└─────────────────────────────────────────┘")
+-- Адаптивный размер контента
+local function updateContentSize()
+    local totalHeight = 0
+    for _, child in pairs(ContentFrame:GetChildren()) do
+        if child:IsA("GuiObject") then
+            totalHeight = totalHeight + child.Size.Y.Offset + ButtonContainer.Padding.Offset
+        end
+    end
+    ContentFrame.CanvasSize = UDim2.new(0, 0, 0, totalHeight)
+end
+
+-- Обновляем размер при изменении
+ContentFrame.ChildAdded:Connect(updateContentSize)
+ContentFrame.ChildRemoved:Connect(updateContentSize)
+updateContentSize()
+
+print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+print("   CallieStarPets(5+) Menu")
+print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+print("RightShift - Show/Hide Menu")
+print("Delete - Destroy Menu")
+print("Drag - Move window")
+print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
