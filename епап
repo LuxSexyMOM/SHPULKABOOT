@@ -169,9 +169,9 @@ local highTierPets = {
 "Shark Puppy","Happy Clam","Jellyfish","Goat","Balloon Unicorn","Haetae","Pelican",
 "Flamingo","Albino Monkey","Goose","Crocodile","Candyfloss Chick","Caterpillar",
 "Peppermint Penguin","Lion Cub","Puffer Fish","Flaming Fox","Husky","Slime","Mule",
-"Sheeeeep","Pudding Pup","Nessie","Hare","Isla Turtle","Hot Doggo","Honey Badger",
+"Sheeeeep"," Christmas Pudding Pup","Nessie","Hare","Isla Turtle","Hot Doggo","Honey Badger",
 "Puffin","Mini Pig","Ring-tailed Lemur","Border collie","Irish Water Spaniel",
-"Fairy Bat Dragon","Cupid Bat Dragon","Strawberry Shortcake Bat Dragon",
+"Fairy Bat Dragon","Cupid Dragon","Strawberry Shortcake Bat Dragon",
 "Chocolate Chip Bat Dragon"
 }
 -- 🐾 Spawn Pets
